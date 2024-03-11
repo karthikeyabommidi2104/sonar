@@ -111,7 +111,8 @@ jobs:
             status="failure"
           fi
           echo "::set-output name=status::$status"
-          
+
+
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
