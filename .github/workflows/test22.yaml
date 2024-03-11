@@ -78,7 +78,7 @@ jobs:
           echo hello form "${{ matrix.service }}"
           sleep 10
           cd client/web/${{ matrix.service }}
-          cd test
+          ls
 
       - name: Set job status
         id: set_status
@@ -111,7 +111,7 @@ jobs:
             status="failure"
           fi
           echo "::set-output name=status::$status"
-          
+
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
