@@ -112,6 +112,10 @@ jobs:
           fi
           echo "::set-output name=status::$status"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 37156e65ef80d4c1673cc3056072393f357663e6
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
