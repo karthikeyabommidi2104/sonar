@@ -92,7 +92,11 @@ jobs:
     name: send-slack2
     needs: deploy_frontend_apps
     if: ${{ always() }}
-    steps:   
+    steps:
+      - name: Extract branch name
+        run: |
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+          
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
