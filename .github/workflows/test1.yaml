@@ -62,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal"]
+        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "updated"]
     name: Deploy "${{ matrix.service }}" to "${{ inputs.environment }}"
 
     steps:
@@ -96,7 +96,7 @@ jobs:
       - name: Extract branch name
         run: |
           echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          
+
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
