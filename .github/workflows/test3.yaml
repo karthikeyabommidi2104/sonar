@@ -80,7 +80,6 @@ jobs:
 
     outputs:
         status: ${{ steps.set_status.outputs.status }}
-        success: 
 
   send-failed:
     runs-on: ubuntu-latest
