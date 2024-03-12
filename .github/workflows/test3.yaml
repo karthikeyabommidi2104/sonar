@@ -49,13 +49,6 @@ jobs:
             User Name: ${{ github.actor }}
             Commit ID: ${{ github.sha }}
             \`\`\`
-          cancelled_text: |
-            \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
 
   deploy_frontend_apps:
     runs-on: ubuntu-latest
@@ -105,12 +98,6 @@ jobs:
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: ${{ needs.deploy_frontend_apps.outputs.status }}
-          success_text: |
-            \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            \`\`\`
           failure_text: |
             \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
@@ -118,8 +105,48 @@ jobs:
             Commit ID: ${{ github.sha }}
             Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
             \`\`\`
+
+  send-success:
+    runs-on: ubuntu-latest
+    name: send-slack2
+    needs: deploy_frontend_apps
+    if: success()
+    steps:
+      - name: Extract branch name
+        run: |
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        id: slack_notification_failed
+        uses: adamkdean/simple-slack-notify@v1.1.2
+        with:
+          channel: '${{ env.SLACK_CHANNEL_ID }}'
+          status: ${{ needs.deploy_frontend_apps.outputs.status }}
+          success_text: |
+            \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
+            \`\`\`
+            User Name: ${{ github.actor }}
+            Commit ID: ${{ github.sha }}
+            \`\`\`
+
+  send-cancelled:
+    runs-on: ubuntu-latest
+    name: send-slack2
+    needs: deploy_frontend_apps
+    if: cancelled()
+    steps:
+      - name: Extract branch name
+        run: |
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        id: slack_notification_failed
+        uses: adamkdean/simple-slack-notify@v1.1.2
+        with:
+          channel: '${{ env.SLACK_CHANNEL_ID }}'
+          status: ${{ needs.deploy_frontend_apps.outputs.status }}
           cancelled_text: |
-            \`Cancelled\` Deployment of \`${{ inputs.api }}\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
+            \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
             User Name: ${{ github.actor }}
             Commit ID: ${{ github.sha }}
