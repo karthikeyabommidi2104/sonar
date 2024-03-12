@@ -100,15 +100,15 @@ jobs:
       - name: Set status variables
         id: set_status_variables
         run: |
-          echo status != "failure"
-          if [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "success" && status != "failure"]; then
-            status="success"
-          elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "failure" ]; then
+          echo $status
+          if [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "failure" ]; then
             status="failure"
+          elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "success" ]; then
+            status="success"
           elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "cancelled" ]; then
             status="cancelled"
           else 
-            status="success"
+            status="cancelled"
           fi
           echo "::set-output name=status::$status"
 
