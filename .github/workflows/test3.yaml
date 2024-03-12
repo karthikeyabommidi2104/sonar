@@ -83,7 +83,7 @@ jobs:
 
   send-failed:
     runs-on: ubuntu-latest
-    name: send-slack2
+    name: Failed
     needs: deploy_frontend_apps
     if: failure()
     steps:
@@ -107,7 +107,7 @@ jobs:
 
   send-success:
     runs-on: ubuntu-latest
-    name: send-slack2
+    name: success
     needs: deploy_frontend_apps
     if: success()
     steps:
@@ -130,7 +130,7 @@ jobs:
 
   send-cancelled:
     runs-on: ubuntu-latest
-    name: send-slack2
+    name: cancelled
     needs: deploy_frontend_apps
     if: cancelled()
     steps:
