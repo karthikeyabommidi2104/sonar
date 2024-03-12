@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Build an artifact
           command: |
-            npm install
+            echo "test"
       - store_artifacts:
           path: client
   deploy:
@@ -27,7 +27,7 @@ jobs:
       - run:
           name: deploy
           command: |
-              npm install
+              echo "test"
 workflows:
   example:
     jobs:
