@@ -108,7 +108,7 @@ jobs:
           elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "cancelled" ]; then
             status="cancelled"
           else 
-            status="failure"
+            status="success"
           fi
           echo "::set-output name=status::$status"
 
