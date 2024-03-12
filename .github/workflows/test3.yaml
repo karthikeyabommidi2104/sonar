@@ -82,17 +82,18 @@ jobs:
 
       - name: Set job status
         id: set_status
-        if: always()
+        if: failure()
         run: echo "::set-output name=status::${{ job.status }}"
 
     outputs:
         status: ${{ steps.set_status.outputs.status }}
+        success: 
 
   send-failed:
     runs-on: ubuntu-latest
     name: send-slack2
     needs: deploy_frontend_apps
-    if: ${{ always() && failure() }}
+    if: ${{ always()}}
     steps:
       - name: Extract branch name
         run: |
