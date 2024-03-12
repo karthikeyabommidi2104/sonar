@@ -83,7 +83,7 @@ jobs:
         id: set_status
         if: always()
         run: echo "::set-output name=status::${{ job.status }}"
-
+status
     outputs:
         status: ${{ steps.set_status.outputs.status }}
 
@@ -100,8 +100,9 @@ jobs:
       - name: Set status variables
         id: set_status_variables
         run: |
+          echo status != "failure"
           if [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "success" && status != "failure"]; then
-            status="success"
+            ="success"
           elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "failure" ]; then
             status="failure"
           elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "cancelled" ]; then
