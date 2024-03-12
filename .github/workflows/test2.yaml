@@ -28,6 +28,7 @@ env:
   CI: false
 
 
+
 jobs:
   send-slack:
     runs-on: ubuntu-latest
@@ -62,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "updated"]
+        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "updated", "testst"]
     name: Deploy "${{ matrix.service }}" to "${{ inputs.environment }}"
 
     steps:
@@ -91,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     name: send-slack2
     needs: deploy_frontend_apps
-    if: always()
+    if: ${{ always() && failure() }}
     steps:
       - name: Extract branch name
         run: |
