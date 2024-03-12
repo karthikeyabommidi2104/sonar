@@ -1,4 +1,4 @@
-name: test-2
+name: test-1
 
 on:
   workflow_dispatch:
@@ -15,8 +15,8 @@ on:
           - 'dev2'
 
 permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: read    # This is required for actions/checkout
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
 
 env:
   AWS_REGION: ${{secrets.AWS_REGION}}
@@ -27,12 +27,11 @@ env:
   SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
   CI: false
 
+
 jobs:
   send-slack:
     runs-on: ubuntu-latest
     name: send-slack
-    outputs:
-      matrix_status: ${{ steps.set_status.outputs.status }} # Output the status of the job
     steps:
       - name: Extract branch name
         run: |
@@ -63,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "test2"]
+        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "updated"]
     name: Deploy "${{ matrix.service }}" to "${{ inputs.environment }}"
 
     steps:
@@ -75,49 +74,35 @@ jobs:
       - name: Deploying "${{ matrix.service }}" to "${{ inputs.environment }}"
         id: apps
         run: |
-          echo hello from "${{ matrix.service }}"
+          echo hello form "${{ matrix.service }}"
           sleep 10
           cd client/web/${{ matrix.service }}
-          ls
+          ls -al
 
       - name: Set job status
         id: set_status
         if: always()
         run: echo "::set-output name=status::${{ job.status }}"
 
+    outputs:
+        status: ${{ steps.set_status.outputs.status }}
+
   send-failed:
     runs-on: ubuntu-latest
     name: send-slack2
     needs: deploy_frontend_apps
-    if: ${{ always() }}
-    strategy:
-      matrix:
-        previous_status: ${{fromJson(needs.deploy_frontend_apps.outputs.matrix_status)}} # Use the previous job's status as part of the next matrix
+    if: always()
     steps:
-      - name: Extract branch name 
-        run: |          
-          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
-   
-      - name: Set status variables
-        id: set_status_variables
+      - name: Extract branch name
         run: |
-          if [ "${{ matrix.previous_status }}" == "success" ]; then
-            status="success"
-          elif [ "${{ matrix.previous_status }}" == "failure" ]; then
-            status="failure"
-          elif [ "${{ matrix.previous_status }}" == "cancelled" ]; then
-            status="cancelled"
-          else 
-            status="failure"
-          fi
-          echo "::set-output name=status::$status"
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Send Slack notification
         id: slack_notification_failed
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ steps.set_status_variables.outputs.status }}
+          status: ${{ needs.deploy_frontend_apps.outputs.status }}
           success_text: |
             \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
