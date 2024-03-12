@@ -77,7 +77,7 @@ jobs:
           echo hello form "${{ matrix.service }}"
           sleep 10
           cd client/web/${{ matrix.service }}
-          cd test
+          ls -al
 
       - name: Set job status
         id: set_status
