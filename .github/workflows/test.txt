@@ -1,0 +1,3 @@
+matrix - multi-jobs - 6 -3 failed 3 succeded
+
+status - 3 failed

@@ -102,7 +102,7 @@ jobs:
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ needs.deploy_frontend_apps.outputs.status }}
+          status: ${{ job.status }}
           success_text: |
             \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
