@@ -15,8 +15,8 @@ on:
           - 'dev2'
 
 permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read    # This is required for actions/checkout
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
 
 env:
   AWS_REGION: ${{secrets.AWS_REGION}}
@@ -27,13 +27,12 @@ env:
   SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
   CI: false
 
-
 jobs:
   send-slack:
     runs-on: ubuntu-latest
     name: send-slack
     outputs:
-      matrix_status: ${{ steps.set_status.outputs.status }}
+      matrix_status: ${{ steps.set_status.outputs.status }} # Output the status of the job
     steps:
       - name: Extract branch name
         run: |
@@ -76,7 +75,7 @@ jobs:
       - name: Deploying "${{ matrix.service }}" to "${{ inputs.environment }}"
         id: apps
         run: |
-          echo hello form "${{ matrix.service }}"
+          echo hello from "${{ matrix.service }}"
           sleep 10
           cd client/web/${{ matrix.service }}
           ls
@@ -86,9 +85,6 @@ jobs:
         if: always()
         run: echo "::set-output name=status::${{ job.status }}"
 
-    outputs:
-        status: ${{ steps.set_status.outputs.status }}
-
   send-failed:
     runs-on: ubuntu-latest
     name: send-slack2
@@ -96,7 +92,7 @@ jobs:
     if: ${{ always() }}
     strategy:
       matrix:
-        previous_status: ${{fromJson(needs.deploy_frontend_apps.outputs.matrix_status)}}
+        previous_status: ${{fromJson(needs.deploy_frontend_apps.outputs.matrix_status)}} # Use the previous job's status as part of the next matrix
     steps:
       - name: Extract branch name 
         run: |          
@@ -105,11 +101,11 @@ jobs:
       - name: Set status variables
         id: set_status_variables
         run: |
-          if [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "success" ]; then
+          if [ "${{ matrix.previous_status }}" == "success" ]; then
             status="success"
-          elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "failure" ]; then
+          elif [ "${{ matrix.previous_status }}" == "failure" ]; then
             status="failure"
-          elif [ "${{ needs.deploy_frontend_apps.outputs.status }}" == "cancelled" ]; then
+          elif [ "${{ matrix.previous_status }}" == "cancelled" ]; then
             status="cancelled"
           else 
             status="failure"
