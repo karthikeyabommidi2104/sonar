@@ -73,14 +73,6 @@ jobs:
           cd client/web/${{ matrix.service }}
           ls -al
 
-      - name: Set job status
-        id: set_status
-        if: failure()
-        run: echo "::set-output name=status::${{ job.status }}"
-
-    outputs:
-        status: ${{ steps.set_status.outputs.status }}
-
   send-failed:
     runs-on: ubuntu-latest
     name: Failed
