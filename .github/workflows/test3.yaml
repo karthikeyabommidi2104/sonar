@@ -96,7 +96,7 @@ jobs:
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ needs.deploy_frontend_apps.outputs.status }}
+          status: failure
           failure_text: |
             \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
@@ -120,7 +120,7 @@ jobs:
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ needs.deploy_frontend_apps.outputs.status }}
+          status: success
           success_text: |
             \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
@@ -143,7 +143,7 @@ jobs:
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ needs.deploy_frontend_apps.outputs.status }}
+          status: cancelled
           cancelled_text: |
             \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
             \`\`\`
