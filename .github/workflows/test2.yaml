@@ -87,39 +87,39 @@ jobs:
     outputs:
         status: ${{ steps.set_status.outputs.status }}
 
-  send-failed:
-    runs-on: ubuntu-latest
-    name: send-slack2
-    needs: deploy_frontend_apps
-    if: always()
-    steps:
-      - name: Extract branch name
-        run: |
-          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+  # send-failed:
+  #   runs-on: ubuntu-latest
+  #   name: send-slack2
+  #   needs: deploy_frontend_apps
+  #   if: always()
+  #   steps:
+  #     - name: Extract branch name
+  #       run: |
+  #         echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
-      - name: Send Slack notification
-        id: slack_notification_failed
-        uses: adamkdean/simple-slack-notify@v1.1.2
-        with:
-          channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ job.status }}
-          success_text: |
-            \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            \`\`\`
-          failure_text: |
-            \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
-          cancelled_text: |
-            \`Cancelled\` Deployment of \`${{ inputs.api }}\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
+  #     - name: Send Slack notification
+  #       id: slack_notification_failed
+  #       uses: adamkdean/simple-slack-notify@v1.1.2
+  #       with:
+  #         channel: '${{ env.SLACK_CHANNEL_ID }}'
+  #         status: ${{ job.status }}
+  #         success_text: |
+  #           \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
+  #           \`\`\`
+  #           User Name: ${{ github.actor }}
+  #           Commit ID: ${{ github.sha }}
+  #           \`\`\`
+  #         failure_text: |
+  #           \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
+  #           \`\`\`
+  #           User Name: ${{ github.actor }}
+  #           Commit ID: ${{ github.sha }}
+  #           Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
+  #           \`\`\`
+  #         cancelled_text: |
+  #           \`Cancelled\` Deployment of \`${{ inputs.api }}\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
+  #           \`\`\`
+  #           User Name: ${{ github.actor }}
+  #           Commit ID: ${{ github.sha }}
+  #           Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
+  #           \`\`\`
