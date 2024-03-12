@@ -56,7 +56,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal"]
+        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test"]
     name: Deploy "${{ matrix.service }}" to "${{ inputs.environment }}"
 
     steps:
