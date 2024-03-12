@@ -91,6 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     name: send-slack2
     needs: deploy_frontend_apps
+    if: always()
     steps:
       - name: Extract branch name
         run: |
