@@ -1,4 +1,4 @@
-name: test-1
+name: test-3
 
 on:
   workflow_dispatch:
@@ -14,6 +14,7 @@ on:
           - 'dev-sandbox'
           - 'dev2'
 
+          
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
@@ -26,7 +27,6 @@ env:
   SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
   SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
   CI: false
-
 
 
 jobs:
@@ -49,13 +49,6 @@ jobs:
             User Name: ${{ github.actor }}
             Commit ID: ${{ github.sha }}
             \`\`\`
-          cancelled_text: |
-            \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
 
   deploy_frontend_apps:
     runs-on: ubuntu-latest
@@ -63,7 +56,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "updated", "testst"]
+        service: ["consumer-rewards", "evolus-admin-tools", "evolus-portal", "test", "test1", "test2", "test3"]
     name: Deploy "${{ matrix.service }}" to "${{ inputs.environment }}"
 
     steps:
@@ -80,19 +73,11 @@ jobs:
           cd client/web/${{ matrix.service }}
           ls -al
 
-      - name: Set job status
-        id: set_status
-        if: always()
-        run: echo "::set-output name=status::${{ job.status }}"
-
-    outputs:
-        status: ${{ steps.set_status.outputs.status }}
-
   send-failed:
     runs-on: ubuntu-latest
-    name: send-slack2
+    name: Failed
     needs: deploy_frontend_apps
-    if: ${{ always() && failure() }}
+    if: failure()
     steps:
       - name: Extract branch name
         run: |
@@ -103,24 +88,45 @@ jobs:
         uses: adamkdean/simple-slack-notify@v1.1.2
         with:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
-          status: ${{ needs.deploy_frontend_apps.outputs.status }}
-          success_text: |
-            \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            \`\`\`
+          status: failure
           failure_text: |
-            \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
+            ${{ github.actor }} \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+
+
+  send-success:
+    runs-on: ubuntu-latest
+    name: success
+    needs: deploy_frontend_apps
+    if: success()
+    steps:
+      - name: Extract branch name
+        run: |
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        id: slack_notification_failed
+        uses: adamkdean/simple-slack-notify@v1.1.2
+        with:
+          channel: '${{ env.SLACK_CHANNEL_ID }}'
+          status: success
+          success_text: |
+            ${{ github.actor }} \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+
+  send-cancelled:
+    runs-on: ubuntu-latest
+    name: cancelled
+    needs: deploy_frontend_apps
+    if: cancelled()
+    steps:
+      - name: Extract branch name
+        run: |
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        id: slack_notification_failed
+        uses: adamkdean/simple-slack-notify@v1.1.2
+        with:
+          channel: '${{ env.SLACK_CHANNEL_ID }}'
+          status: cancelled
           cancelled_text: |
-            \`Cancelled\` Deployment of \`${{ inputs.api }}\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
+            ${{ github.actor }} \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
