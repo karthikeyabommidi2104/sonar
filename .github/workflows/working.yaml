@@ -44,7 +44,7 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: ${{ job.status }}
           success_text: |
-            ${{ github.actor }} \`Started\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+            \`${{ github.actor }}\` \`Started\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ \`${{ github.sha }}\`
  
 
   deploy_frontend_apps:
@@ -87,7 +87,7 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: failure
           failure_text: |
-            ${{ github.actor }} \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+            \`${{ github.actor }}\` \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ \`${{ github.sha }}\`
 
 
   send-success:
@@ -107,7 +107,7 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: success
           success_text: |
-            ${{ github.actor }} \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+            \`${{ github.actor }}\` \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ \`${{ github.sha }}\`
 
   send-cancelled:
     runs-on: ubuntu-latest
@@ -126,4 +126,4 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: cancelled
           cancelled_text: |
-            ${{ github.actor }} \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+            \`${{ github.actor }}\` \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ \`${{ github.sha }}\`
