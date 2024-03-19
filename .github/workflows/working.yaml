@@ -44,11 +44,8 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: ${{ job.status }}
           success_text: |
-            \`Started\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            \`\`\`
+            ${{ github.actor }} \`Started\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+ 
 
   deploy_frontend_apps:
     runs-on: ubuntu-latest
