@@ -14,6 +14,7 @@ on:
           - 'dev-sandbox'
           - 'dev2'
 
+          
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
@@ -26,7 +27,6 @@ env:
   SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
   SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
   CI: false
-
 
 
 jobs:
@@ -90,12 +90,8 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: failure
           failure_text: |
-            \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
+            ${{ github.actor }} \`Failed\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
+
 
   send-success:
     runs-on: ubuntu-latest
@@ -114,11 +110,7 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: success
           success_text: |
-            \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            \`\`\`
+            ${{ github.actor }} \`Succeded\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
 
   send-cancelled:
     runs-on: ubuntu-latest
@@ -137,9 +129,4 @@ jobs:
           channel: '${{ env.SLACK_CHANNEL_ID }}'
           status: cancelled
           cancelled_text: |
-            \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\`
-            \`\`\`
-            User Name: ${{ github.actor }}
-            Commit ID: ${{ github.sha }}
-            Action URL: ${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}
-            \`\`\`
+            ${{ github.actor }} \`Cancelled\` Deployment of \`Deploy_Full_Frontend_Apps\` to \`${{ inputs.environment }}\` from \`${env.BRANCH}\` @ ${{ github.sha }}
